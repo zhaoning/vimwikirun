@@ -22,9 +22,9 @@ function! markdown_runner#Insert() abort
     "   let end_result_block_line = search('}}}', 'cW')
     "   if end_result_block_line
     "     if getline(end_result_block_line + 1) ==# ''
-    "       call deletebufline(bufname("%"), runner.end + 2, end_result_block_line + 1) 
+    "       call deletebufline(bufname("%"), runner.end + 2, end_result_block_line + 1)
     "     else
-    "       call deletebufline(bufname("%"), runner.end + 2, end_result_block_line) 
+    "       call deletebufline(bufname("%"), runner.end + 2, end_result_block_line)
     "     endif
     "   endif
     "   call setpos('.', save_cursor)

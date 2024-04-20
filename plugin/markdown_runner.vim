@@ -1,5 +1,5 @@
-command! MarkdownRunner call markdown_runner#Echo()
-command! MarkdownRunnerInsert call markdown_runner#Insert()
+command! VikiRunEcho call markdown_runner#Echo()
+command! VikiRunInsert call markdown_runner#Insert()
 
 if !exists("g:markdown_runners")
   let g:markdown_runners = {
