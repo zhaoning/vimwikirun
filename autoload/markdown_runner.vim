@@ -16,26 +16,26 @@ function! markdown_runner#Insert() abort
     let runner = s:RunCodeBlock()
 "}}}
     " Remove existing results if present{{{
-    if getline(runner.end + 2) ==# '```markdown-runner'
-      let save_cursor = getcurpos()
-      call cursor(runner.end + 3, 0)
-      let end_result_block_line = search('```', 'cW')
-      if end_result_block_line
-        if getline(end_result_block_line + 1) ==# ''
-          call deletebufline(bufname("%"), runner.end + 2, end_result_block_line + 1) 
-        else
-          call deletebufline(bufname("%"), runner.end + 2, end_result_block_line) 
-        endif
-      endif
-      call setpos('.', save_cursor)
-    endif
+    " if getline(runner.end + 2) ==# '{{{markdown-runner'
+    "   let save_cursor = getcurpos()
+    "   call cursor(runner.end + 3, 0)
+    "   let end_result_block_line = search('}}}', 'cW')
+    "   if end_result_block_line
+    "     if getline(end_result_block_line + 1) ==# ''
+    "       call deletebufline(bufname("%"), runner.end + 2, end_result_block_line + 1) 
+    "     else
+    "       call deletebufline(bufname("%"), runner.end + 2, end_result_block_line) 
+    "     endif
+    "   endif
+    "   call setpos('.', save_cursor)
+    " endif
     "}}}
     " Insert new results
     let result_lines = split(runner.result, '\n')
     call append(runner.end, '')
-    call append(runner.end + 1, '```markdown-runner')
+    call append(runner.end + 1, '{{{')
     call append(runner.end + 2, result_lines)
-    call append(runner.end + len(result_lines) + 2, '```')
+    call append(runner.end + len(result_lines) + 2, '}}}')
   catch /.*/
     call s:error(v:exception)
   endtry
@@ -70,9 +70,9 @@ endfunction
 " Parse code block around cursor.
 "
 " Given
-" ```python
+" {{{python
 " print('test')
-" ```
+" }}}
 "
 " Returns {
 "   'src': ["print('test')"],
@@ -85,14 +85,14 @@ endfunction
 function! s:ParseCodeBlock() abort
   let result = {}
 
-  if match(getline("."), '^```') != -1
+  if match(getline("."), '^{{{') != -1
     throw "Not in a markdown code block"
   endif
-  let start_i = search('^```', 'bnW')
+  let start_i = search('^{{{', 'bnW')
   if start_i == 0
     throw "Not in a markdown code block"
   endif
-  let end_i = search('^```', 'nW')
+  let end_i = search('^}}}', 'nW')
   if end_i == 0
     throw "Not in a markdown code block"
   endif
