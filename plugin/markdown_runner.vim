@@ -10,7 +10,6 @@ if !exists("g:vikirun_kernels")
                 \ 'go': function("markdown_runner#RunGoBlock"),
                 \ 'js': 'node',
                 \ 'javascript': 'node',
-                \ 'bean-query': 'bean-query ~/bean/ktulu.bean',
                 \ 'vim': function("markdown_runner#RunVimBlock"),
                 \ }
 endif
