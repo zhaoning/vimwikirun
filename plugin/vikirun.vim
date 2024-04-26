@@ -1,16 +1,16 @@
-command! VikiRunEcho call markdown_runner#Echo()
-command! VikiRunInsert call markdown_runner#Insert()
-command! VikiRunQf call viki_run#Qf()
-command! VikiRunLo call viki_run#Lo()
+command! VikiRunEcho call vikirun#Echo()
+command! VikiRunInsert call vikirun#Insert()
+command! VikiRunQf call vikirun#Qf()
+command! VikiRunLo call vikirun#Lo()
 
 " if !exists("g:markdown_runners")
 if !exists("g:vikirun_kernels")
     let g:vikirun_kernels = {
                 \ '': getenv('SHELL'),
-                \ 'go': function("markdown_runner#RunGoBlock"),
+                \ 'go': function("vikirun#RunGoBlock"),
                 \ 'js': 'node',
                 \ 'javascript': 'node',
-                \ 'vim': function("markdown_runner#RunVimBlock"),
+                \ 'vim': function("vikirun#RunVimBlock"),
                 \ }
 endif
 

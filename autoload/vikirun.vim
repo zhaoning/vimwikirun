@@ -1,5 +1,5 @@
 " Run code block and echo results
-function! markdown_runner#Echo() abort
+function! vikirun#Echo() abort
     try
         let runner = s:RunCodeBlock()
         echo runner.result
@@ -11,7 +11,7 @@ endfunction
 " Run code block and insert results into buffer.{{{
 " IF there is a fenced code block with language 'markdown-runner' below the
 " current code block it will be replaced with the new results.
-function! markdown_runner#Insert() abort
+function! vikirun#Insert() abort
     try
         let runner = s:RunCodeBlock()
         "}}}
@@ -104,7 +104,7 @@ endfunction
 
 " Language specific runners
 
-function! markdown_runner#RunGoBlock(src) abort
+function! vikirun#RunGoBlock(src) abort
     let tmp = tempname() . ".go"
     let src = a:src
 
@@ -126,7 +126,7 @@ function! markdown_runner#RunGoBlock(src) abort
     return res
 endfunction
 
-function! markdown_runner#RunVimBlock(src) abort
+function! vikirun#RunVimBlock(src) abort
     let tmp = tempname() . ".vim"
     call writefile(a:src, tmp)
     execute "source " . tmp
