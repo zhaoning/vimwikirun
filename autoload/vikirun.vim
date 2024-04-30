@@ -8,29 +8,10 @@ function! vikirun#Echo() abort
     endtry
 endfunction
 
-" Run code block and insert results into buffer.{{{
-" IF there is a fenced code block with language 'markdown-runner' below the
-" current code block it will be replaced with the new results.
+" Run code block and insert results into buffer
 function! vikirun#Insert() abort
     try
         let runner = s:RunCodeBlock()
-        "}}}
-        " Remove existing results if present{{{
-        " if getline(runner.end + 2) ==# '{{{markdown-runner'
-        "   let save_cursor = getcurpos()
-        "   call cursor(runner.end + 3, 0)
-        "   let end_result_block_line = search('}}}', 'cW')
-        "   if end_result_block_line
-        "     if getline(end_result_block_line + 1) ==# ''
-        "       call deletebufline(bufname("%"), runner.end + 2, end_result_block_line + 1)
-        "     else
-        "       call deletebufline(bufname("%"), runner.end + 2, end_result_block_line)
-        "     endif
-        "   endif
-        "   call setpos('.', save_cursor)
-        " endif
-        "}}}
-        " Insert new results
         let result_lines = split(runner.result, '\n')
         call append(runner.end, '')
         call append(runner.end + 1, '{{{')
@@ -41,6 +22,27 @@ function! vikirun#Insert() abort
     endtry
 endfunction
 
+" Run code block and direct results to quickfix
+function! vikirun#Qf() abort
+    try
+        let runner = s:RunCodeBlock()
+        cexpr runner.result
+    catch /.*/
+        call s:error(v:exception)
+    endtry
+endfunction
+
+" Run code block and direct results to location list
+function! vikirun#Lo() abort
+    try
+        let runner = s:RunCodeBlock()
+        lexpr runner.result
+    catch /.*/
+        call s:error(v:exception)
+    endtry
+endfunction
+
+" Handle errors
 function! s:error(error)
     execute 'normal! \<Esc>'
     echohl ErrorMsg
@@ -56,13 +58,8 @@ function! s:RunCodeBlock() abort
     elseif type(Runner) == v:t_string
         let result = system(Runner, runner.src)
     else
-        throw "Invalid kernel"
+        throw "Invalid kernel."
     endif
-    " if g:markdown_runner_populate_location_list == 1
-    "     let result_lines = split(result, '\n')
-    "     call map(result_lines, {_, val -> {'text': val}})
-    "     call setloclist(0, result_lines)
-    " endif
     let runner.result = result
     return runner
 endfunction
@@ -71,19 +68,19 @@ function! s:ParseCodeBlock() abort
     let result = {}
 
     if match(getline("."), '^{{{') != -1
-        throw "Not in a markdown code block"
+        throw "Not in a markdown code block."
     endif
     let start_i = search('^{{{', 'bnW')
     if start_i == 0
-        throw "Not in a markdown code block"
+        throw "Not in a markdown code block."
     endif
     let end_i = search('^}}}', 'nW')
     if end_i == 0
-        throw "Not in a markdown code block"
+        throw "Not in a markdown code block."
     endif
     let lines = getline(start_i, end_i)
     if len(lines) < 3
-        throw "Code block is empty"
+        throw "Code block is empty."
     endif
 
     let result.src = lines[1:-2]
@@ -101,8 +98,6 @@ function! s:GetKernel(language) abort
     endif
     return get(g:vikirun_kernels, a:language, a:language)
 endfunction
-
-" Language specific runners
 
 function! vikirun#RunGoBlock(src) abort
     let tmp = tempname() . ".go"
