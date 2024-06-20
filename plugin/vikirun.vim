@@ -1,5 +1,6 @@
 command! VikiRunEcho call vikirun#Echo()
-command! VikiRunInsert call vikirun#Insert()
+command! VikiRunInsert call vikirun#Insert(0)
+command! VikiRunReplace call vikirun#Insert(1)
 command! VikiRunQf call vikirun#Qf()
 command! VikiRunLo call vikirun#Lo()
 

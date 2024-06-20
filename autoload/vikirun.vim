@@ -9,12 +9,33 @@ function! vikirun#Echo() abort
 endfunction
 
 " Run code block and insert results into buffer
-function! vikirun#Insert() abort
+function! vikirun#Insert(replace) abort
     try
         let runner = s:RunCodeBlock()
+
+        " Remove existing results if present{{{
+        if getline(runner.end + 2) ==# '{{{out' && a:replace
+            let save_cursor = getcurpos()
+            call cursor(runner.end + 3, 0)
+            let end_result_block_line = search('}}}', 'cW')
+            if end_result_block_line
+                if getline(end_result_block_line + 1) ==# ''
+                    call deletebufline(bufname("%"),
+                                \ runner.end + 2,
+                                \ end_result_block_line + 1)
+                else
+                    call deletebufline(bufname("%"),
+                                \ runner.end + 2,
+                                \ end_result_block_line)
+                endif
+            endif
+            call setpos('.', save_cursor)
+        endif
+        "}}}
+
         let result_lines = split(runner.result, '\n')
         call append(runner.end, '')
-        call append(runner.end + 1, '{{{')
+        call append(runner.end + 1, '{{{out')
         call append(runner.end + 2, result_lines)
         call append(runner.end + len(result_lines) + 2, '}}}')
     catch /.*/
